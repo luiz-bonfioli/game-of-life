@@ -24,9 +24,10 @@ const countLiveNeighbors = (matrixInput: number[][], r: number, c: number, rows:
 }
 
 // Determines the next state of a cell based on its current state and the number of live neighbors
-const LIVE = 1;
-const DEAD = 0;
 const getNextCellState = (currentCell: number, liveNeighbors: number): number => {
+    const LIVE = 1
+    const DEAD = 0
+
     if (currentCell === LIVE) {
         // Rule 1: Any live cell with fewer than two live neighbors dies, as if by underpopulation
         // Rule 2: Any live cell with two or three live neighbors lives on to the next generation
