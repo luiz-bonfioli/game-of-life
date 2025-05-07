@@ -7,15 +7,14 @@ interface UniverseProps {
 
 export default function Universe({
                                      onCellSelected,
-                                     matrixInput = [],
+                                     matrixInput = []
                                  }: UniverseProps) {
     const matrix = matrixInput
-
     const numRows = matrix.length
     const numCols = matrix[0]?.length || 0
-    const cellSize = 10 // each cell is 10x10px
+    const cellSize = 10
 
-    const cell = ({columnIndex, rowIndex, style}: GridChildComponentProps) => {
+    const Cell = ({columnIndex, rowIndex, style}: GridChildComponentProps) => {
         const value = matrix[rowIndex][columnIndex]
 
         const handleClick = () => {
@@ -32,8 +31,7 @@ export default function Universe({
                     cursor: 'pointer',
                     display: 'inline-block',
                 }}
-                onClick={handleClick}
-            />
+                onClick={handleClick}/>
         )
     }
 
@@ -45,7 +43,7 @@ export default function Universe({
             rowHeight={cellSize}
             width={Math.min(window.innerWidth, numCols * cellSize)}
             height={Math.min(window.innerHeight, numRows * cellSize)}>
-            {cell}
+            {Cell}
         </Grid>
     )
 }
