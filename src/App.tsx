@@ -1,11 +1,6 @@
 import {useEffect, useState} from "react"
-import Universe from "./components/Universe.tsx"
-import {
-    fetchEmptyMatrixAsync,
-    fetchNextGenAsync,
-    fetchSeedGliderGunMatrixAsync,
-    fetchSeedLWSSMatrixAsync
-} from "./services/LifeService.ts"
+import Universe from "./components/Universe"
+import {fetchEmptyMatrixAsync, fetchNextGenAsync, fetchSeedGliderGunMatrixAsync} from "./services/LifeService"
 
 function App() {
     const dimension = 50
@@ -13,35 +8,53 @@ function App() {
     const [playing, setPlaying] = useState(false)
     const [steps, setSteps] = useState(1)
 
-    const handleGliderGunMatrix = async () => {
-        const gliderGunMatrix = await fetchSeedGliderGunMatrixAsync(dimension)
-        setMatrix(gliderGunMatrix)
-    }
+    const handlePlay = () => setPlaying(true)
+    const handleStop = () => setPlaying(false)
 
-    const handleWSSMatrix = async () => {
-        const lwssMatrix = await fetchSeedLWSSMatrixAsync(dimension)
-        setMatrix(lwssMatrix)
+    const handleGliderGunMatrix = () => {
+        fetchSeedGliderGunMatrixAsync(dimension)
+            .then(gliderGunMatrix => {
+                setMatrix(gliderGunMatrix)
+            })
+            .catch(error => {
+                console.error('Failed to fetch glider gun matrix:', error)
+            })
     }
 
     const handleNext = async () => {
-        const nextMatrix = await fetchNextGenAsync(matrix)
-        setMatrix(nextMatrix)
+        fetchNextGenAsync(matrix)
+            .then(nextMatrix => {
+                setMatrix(nextMatrix)
+            })
+            .catch(error => {
+                console.error('Failed to fetch next matrix:', error)
+            })
     }
 
-    const handlePlay = () => setPlaying(true)
-    const handleStop = () => setPlaying(false)
+    const handleMoveForward = (numSteps: number) => {
+        let newMatrix = matrix
+        let promise = Promise.resolve(newMatrix)
+
+        for (let i = 0; i < numSteps; i++) {
+            promise = promise.then((currentMatrix) =>
+                fetchNextGenAsync(currentMatrix).then((result) => {
+                    newMatrix = result
+                    return result
+                })
+            )
+        }
+        promise
+            .then(() => {
+                setMatrix(newMatrix)
+            })
+            .catch((error) => {
+                console.error('Error while moving forward:', error)
+            })
+    }
 
     const handleCellSelected = (row: number, col: number) => {
         const newMatrix = matrix.map(rowArr => [...rowArr])
         newMatrix[row][col] = newMatrix[row][col] === 0 ? 1 : 0
-        setMatrix(newMatrix)
-    }
-
-    const handleMoveForward = async (numSteps: number) => {
-        let newMatrix = matrix
-        for (let i = 0; i < numSteps; i++) {
-            newMatrix = await fetchNextGenAsync(newMatrix)
-        }
         setMatrix(newMatrix)
     }
 
@@ -52,7 +65,6 @@ function App() {
                 setMatrix(nextMatrix)
             }
         }
-
         if (playing) {
             const interval = setInterval(updateMatrix, 300)
             return () => clearInterval(interval)
@@ -88,11 +100,6 @@ function App() {
                     onClick={handleGliderGunMatrix}>
                     Matrix Glider
                 </button>
-                <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600"
-                    onClick={handleWSSMatrix}>
-                    Matrix WSS
-                </button>
                 <div className="mt-2">
                     <button
                         className="px-4 py-2 bg-indigo-500 text-white rounded mr-2 hover:bg-indigo-600"
@@ -108,10 +115,7 @@ function App() {
                     />
                 </div>
             </div>
-            <Universe
-                matrixInput={matrix}
-                onCellSelected={handleCellSelected}
-            />
+            <Universe matrixInput={matrix} onCellSelected={handleCellSelected}/>
         </div>
     )
 }

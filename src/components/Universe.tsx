@@ -1,7 +1,7 @@
 import {FixedSizeGrid as Grid, type GridChildComponentProps} from 'react-window'
 
-interface UniverseProps {
-    onCellSelected?: (row: number, col: number, value: number) => void
+export interface UniverseProps {
+    onCellSelected?: (row: number, col: number) => void
     matrixInput?: number[][]
 }
 
@@ -18,7 +18,7 @@ export default function Universe({
         const value = matrix[rowIndex][columnIndex]
 
         const handleClick = () => {
-            if (onCellSelected) onCellSelected(rowIndex, columnIndex, value)
+            if (onCellSelected) onCellSelected(rowIndex, columnIndex)
         }
 
         return (
