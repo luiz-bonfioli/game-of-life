@@ -1,23 +1,8 @@
-import {nextGen} from "../common/LifeAlgorithm.ts";
+import {nextGen} from "../common/LifeAlgorithm"
 
-// Helper function to create an empty matrix of a specific dimension
+// Helper to create an empty matrix
 const createEmptyMatrix = (dimension: number): number[][] => {
-    return Array.from({length: dimension}, () => Array(dimension).fill(0));
-}
-
-// Helper function to centralize a seed in a matrix
-const centralizeSeed = (matrix: number[][], seed: number[][]): number[][] => {
-    const seedRows = seed.length;
-    const seedCols = seed[0].length;
-    const startRow = Math.floor((matrix.length - seedRows) / 2);
-    const startCol = Math.floor((matrix[0].length - seedCols) / 2);
-
-    for (let i = 0; i < seedRows; i++) {
-        for (let j = 0; j < seedCols; j++) {
-            matrix[startRow + i][startCol + j] = seed[i][j];
-        }
-    }
-    return matrix;
+    return Array.from({length: dimension}, () => Array(dimension).fill(0))
 }
 
 // Fetch the next generation of the matrix
@@ -27,37 +12,52 @@ export const fetchNextGenAsync = (matrixInput: number[][]): Promise<number[][]> 
 
 // Fetch empty matrix
 export const fetchEmptyMatrixAsync = (dimension: number): Promise<number[][]> => {
-    const emptyMatrix = createEmptyMatrix(dimension);
-    return Promise.resolve(emptyMatrix);
+    return Promise.resolve(createEmptyMatrix(dimension))
 }
 
-// Fetch Glider Gun pattern centralized in the matrix
+// Helper to insert coordinates centered into matrix
+const centralizeSeed = (
+    dimension: number,
+    patternCoords: number[][],
+    patternHeight: number,
+    patternWidth: number
+): number[][] => {
+    const matrix = createEmptyMatrix(dimension)
+    const offsetRow = Math.floor((dimension - patternHeight) / 2)
+    const offsetCol = Math.floor((dimension - patternWidth) / 2)
+
+    for (const [row, col] of patternCoords) {
+        const targetRow = offsetRow + row
+        const targetCol = offsetCol + col
+        if (targetRow >= 0 && targetRow < dimension && targetCol >= 0 && targetCol < dimension) {
+            matrix[targetRow][targetCol] = 1
+        }
+    }
+
+    return matrix
+}
+
+// Fetch Glider Gun pattern
 export const fetchSeedGliderGunMatrixAsync = (dimension: number): Promise<number[][]> => {
-    const seedGliderGunMatrix: number[][] = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
+    const gunCoords = [
+        [5, 1], [5, 2], [6, 1], [6, 2],
+        [5, 11], [6, 11], [7, 11],
+        [4, 12], [8, 12],
+        [3, 13], [9, 13],
+        [3, 14], [9, 14],
+        [6, 15],
+        [4, 16], [8, 16],
+        [5, 17], [6, 17], [7, 17],
+        [6, 18],
+        [3, 21], [4, 21], [5, 21],
+        [3, 22], [4, 22], [5, 22],
+        [2, 23], [6, 23],
+        [1, 25], [2, 25], [6, 25], [7, 25],
+        [3, 35], [4, 35], [3, 36], [4, 36]
+    ]
+    const gunHeight = 11 // based on max row index + 1
+    const gunWidth = 38  // based on max col index + 1
 
-    const matrix = createEmptyMatrix(dimension);
-    const centralizedMatrix = centralizeSeed(matrix, seedGliderGunMatrix);
-    return Promise.resolve(centralizedMatrix);
-}
-
-// Fetch LWSS pattern centralized in the matrix
-export const fetchSeedLWSSMatrixAsync = (dimension: number): Promise<number[][]> => {
-    const seedLWSSMatrix: number[][] = [
-        [0, 0, 0, 1, 0],
-        [0, 0, 1, 0, 1],
-        [0, 1, 0, 1, 0],
-        [1, 0, 1, 1, 0],
-        [0, 0, 0, 0, 0]
-    ];
-
-    const matrix = createEmptyMatrix(dimension);
-    const centralizedMatrix = centralizeSeed(matrix, seedLWSSMatrix);
-    return Promise.resolve(centralizedMatrix);
+    const matrix = centralizeSeed(dimension, gunCoords, gunHeight, gunWidth)
+    return Promise.resolve(matrix)
 }
