@@ -161,7 +161,7 @@ export default function Game() {
                 </div>
             </div>
         </div>
-        <div className="flex flex-col items-center mt-2">
+        <div className="flex flex-col items-center m-2">
             <Universe matrixInput={matrix} onCellSelected={handleCellSelected}/>
         </div>
         </>
