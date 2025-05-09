@@ -1,3 +1,29 @@
+/**
+ * Conway's Game of Life Algorithm Implementation
+ *
+ * This module contains the core logic for calculating the next generation
+ * of a Game of Life grid based on the standard rules.
+ *
+ * Exports:
+ * - nextGen(matrixInput: number[][]): number[][]
+ *   Computes and returns the next generation matrix based on the input matrix.
+ *
+ * Internal helpers:
+ * - createEmptyMatrix(rows, cols): Creates a 2D array filled with 0 (dead cells).
+ * - countLiveNeighbors(matrixInput, r, c, rows, cols): Counts the number of live (1) neighbors around a cell.
+ * - getNextCellState(currentCell, liveNeighbors): Determines the next state (alive or dead) of a cell
+ *   according to the classic Game of Life rules:
+ *     1. Any live cell with <2 live neighbors dies (underpopulation).
+ *     2. Any live cell with 2 or 3 live neighbors survives.
+ *     3. Any live cell with >3 live neighbors dies (overpopulation).
+ *     4. Any dead cell with exactly 3 live neighbors becomes alive (reproduction).
+ *
+ * Notes:
+ * - The input and output matrices are represented as 2D arrays of numbers (0 = dead, 1 = alive).
+ * - The implementation does not mutate the original matrix; it returns a new matrix.
+ *
+ */
+
 // Creates an empty matrix with the given number of rows and columns, initializing all cells to 0
 const createEmptyMatrix = (rows: number, cols: number): number[][] => {
     return Array.from({length: rows}, () => Array(cols).fill(0))

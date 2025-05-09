@@ -1,5 +1,31 @@
 import {FixedSizeGrid as Grid, type GridChildComponentProps} from 'react-window'
 
+/**
+ * Universe Component
+ *
+ * A virtualized grid component that renders a matrix of cells using react-window's FixedSizeGrid.
+ *
+ * Props:
+ * - matrixInput (number[][]): A 2D array where each cell contains 0 or 1, representing the grid state.
+ *   - 1 -> rendered as a black cell
+ *   - 0 -> rendered as a light gray cell
+ * - onCellSelected (function): Callback triggered when a cell is clicked, providing the row and column indices.
+ *
+ * Features:
+ * - Uses react-window for efficient rendering of large grids by only rendering visible cells.
+ * - Responsive sizing: window size limits grid dimensions.
+ * - Each cell is a clickable <span> that triggers onCellSelected if provided.
+ *
+ * Example usage:
+ * <Universe
+ *   matrixInput={[[0,1,0], [1,0,1]]}
+ *   onCellSelected={(row, col) => console.log(`Clicked cell at ${row}, ${col}`)}
+ * />
+ *
+ * Note:
+ * - Adjust `cellSize` if you want larger or smaller cells.
+ */
+
 export interface UniverseProps {
     onCellSelected?: (row: number, col: number) => void
     matrixInput?: number[][]
