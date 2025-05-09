@@ -2,6 +2,7 @@ import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import App from '../src/App'
 import * as LifeService from '../src/services/LifeService'
+import * as Config from '../src/common/Config'
 
 // Mock the Universe component
 jest.mock('../src/components/Universe', () => ({
@@ -16,18 +17,26 @@ jest.mock('../src/services/LifeService', () => ({
     fetchNextGenAsync: jest.fn(),
 }))
 
+// Mock the `getMatrixDimension` function from Config
+jest.mock('../src/common/Config', () => ({
+    getMatrixDimension: jest.fn(),
+}))
+
 const mockedLifeService = LifeService as jest.Mocked<typeof LifeService>
+const mockedConfig = Config as jest.Mocked<typeof Config>
 
 const mockedEmptyMatrix = Array(50).fill(Array(50).fill(0))
 const mockedGliderGunMatrix = Array(50).fill(Array(50).fill(1))
 const mockedNextGenMatrix = Array(50).fill(Array(50).fill(2))
 
 describe('App Component', () => {
+
     beforeEach(() => {
         jest.resetAllMocks()
         mockedLifeService.fetchEmptyMatrixAsync.mockResolvedValue(mockedEmptyMatrix)
         mockedLifeService.fetchSeedGliderGunMatrixAsync.mockResolvedValue(mockedGliderGunMatrix)
         mockedLifeService.fetchNextGenAsync.mockResolvedValue(mockedNextGenMatrix)
+        mockedConfig.getMatrixDimension.mockReturnValue(50)
     })
 
     test('renders initial UI elements', async () => {
