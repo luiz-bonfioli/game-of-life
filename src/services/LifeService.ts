@@ -1,5 +1,34 @@
 import {nextGen} from "../common/LifeAlgorithm"
 
+/**
+ * Matrix Utilities for Conway's Game of Life
+ *
+ * This module provides utility functions to generate, update, and seed matrices
+ * used in the Game of Life simulation.
+ *
+ * Exports:
+ *
+ * - fetchNextGenAsync(matrixInput): Promise<number[][]>
+ *   Runs the next generation of the matrix using the LifeAlgorithm (pure function).
+ *
+ * - fetchEmptyMatrixAsync(dimension): Promise<number[][]>
+ *   Generates and returns a promise with an empty square matrix of the given size.
+ *
+ * - fetchSeedGliderGunMatrixAsync(dimension): Promise<number[][]>
+ *   Generates a square matrix of the given size with the famous Gosper Glider Gun
+ *   pattern centralized in the grid.
+ *
+ * Internals:
+ * - createEmptyMatrix(dimension): Creates a 2D array filled with zeros.
+ * - centralizeSeed(dimension, patternCoords, patternHeight, patternWidth):
+ *   Inserts a given pattern (list of live cell coordinates) centered into an empty matrix.
+ *
+ * Notes:
+ * - All matrix data is represented as a 2D array of numbers (0 = dead cell, 1 = live cell).
+ * - Async functions are wrapped with Promise.resolve for API consistency, even if they are synchronous internally.
+ *
+ */
+
 // Helper to create an empty matrix
 const createEmptyMatrix = (dimension: number): number[][] => {
     return Array.from({length: dimension}, () => Array(dimension).fill(0))
