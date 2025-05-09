@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react"
 import Universe from "./components/Universe"
 import {fetchEmptyMatrixAsync, fetchNextGenAsync, fetchSeedGliderGunMatrixAsync} from "./services/LifeService"
+import Logger from "./common/Logger";
 
 function App() {
     const dimension = 50
@@ -8,8 +9,14 @@ function App() {
     const [playing, setPlaying] = useState(false)
     const [steps, setSteps] = useState(1)
 
-    const handlePlay = () => setPlaying(true)
-    const handleStop = () => setPlaying(false)
+    const handlePlay = () => {
+        Logger.logInfo('Playing')
+        setPlaying(true)
+    }
+    const handleStop = () => {
+        Logger.logInfo('Stopped')
+        setPlaying(false)
+    }
 
     const handleGliderGunMatrix = () => {
         fetchSeedGliderGunMatrixAsync(dimension)
@@ -17,21 +24,23 @@ function App() {
                 setMatrix(gliderGunMatrix)
             })
             .catch(error => {
-                console.error('Failed to fetch glider gun matrix:', error)
+                Logger.logError('Failed to fetch glider gun matrix:', error)
             })
     }
 
     const handleNext = async () => {
+        Logger.logInfo('Next generation matrix')
         fetchNextGenAsync(matrix)
             .then(nextMatrix => {
                 setMatrix(nextMatrix)
             })
             .catch(error => {
-                console.error('Failed to fetch next matrix:', error)
+                Logger.logError('Failed to fetch next matrix:', error)
             })
     }
 
     const handleMoveForward = (numSteps: number) => {
+        Logger.logInfo(`Moving ${numSteps} steps forward`)
         let newMatrix = matrix
         let promise = Promise.resolve(newMatrix)
 
@@ -48,7 +57,7 @@ function App() {
                 setMatrix(newMatrix)
             })
             .catch((error) => {
-                console.error('Error while moving forward:', error)
+                Logger.logError('Error while moving forward:', error)
             })
     }
 
