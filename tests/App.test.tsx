@@ -1,6 +1,6 @@
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import App from '../src/App'
+import Game from '../src/components/Game'
 import * as LifeService from '../src/services/LifeService'
 import * as Config from '../src/common/Config'
 
@@ -29,7 +29,7 @@ const mockedEmptyMatrix = Array(50).fill(Array(50).fill(0))
 const mockedGliderGunMatrix = Array(50).fill(Array(50).fill(1))
 const mockedNextGenMatrix = Array(50).fill(Array(50).fill(2))
 
-describe('App Component', () => {
+describe('Game Component', () => {
 
     beforeEach(() => {
         jest.resetAllMocks()
@@ -40,7 +40,7 @@ describe('App Component', () => {
     })
 
     test('renders initial UI elements', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         expect(screen.getByText(/Play/)).toBeInTheDocument()
         expect(screen.getByText(/Stop/)).toBeInTheDocument()
@@ -49,7 +49,7 @@ describe('App Component', () => {
     })
 
     test('calls fetchEmptyMatrixAsync and sets the initial matrix', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         await waitFor(() => {
             expect(mockedLifeService.fetchEmptyMatrixAsync).toHaveBeenCalledWith(50)
@@ -58,7 +58,7 @@ describe('App Component', () => {
     })
 
     test('clicking Play button sets playing state to true', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         const playButton = screen.getByText(/Play/)
         await act(async () => {
@@ -70,7 +70,7 @@ describe('App Component', () => {
     })
 
     test('clicking Stop button sets playing state to false', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         // Start the game
         const playButton = screen.getByText(/Play/)
@@ -86,7 +86,7 @@ describe('App Component', () => {
     })
 
     test('clicking Next button calls fetchNextGenAsync', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         const nextButton = screen.getByText(/Next/)
         await act(async () => {
@@ -99,7 +99,7 @@ describe('App Component', () => {
     })
 
     test('clicking Matrix Glider button calls fetchSeedGliderGunMatrixAsync', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         const gliderButton = screen.getByText(/Matrix Glider/)
         await act(async () => {
@@ -113,7 +113,7 @@ describe('App Component', () => {
     })
 
     test('clicking Move Step button updates steps', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         const moveButton = screen.getByText(/Move 1 Step/)
         const inputField = screen.getByRole('spinbutton')
@@ -128,7 +128,7 @@ describe('App Component', () => {
     })
 
     test('the matrix updates after clicking on the Matrix Glider button', async () => {
-        render(<App/>)
+        render(<Game/>)
 
         const gliderButton = screen.getByText(/Matrix Glider/)
         await act(async () => {
