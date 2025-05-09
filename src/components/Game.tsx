@@ -9,7 +9,7 @@ import styles from "../App.module.css";
 This React application implements Conway's Game of Life.
 
 Overview of the solution:
-The `App` component manages the entire game state and orchestrates updates to the universe grid.
+The `Game` component manages the entire game state and orchestrates updates to the universe grid.
 
 Core features:
 - The universe grid is represented by a 2D matrix (`number[][]`), where `1` is a live cell and `0` is a dead cell.
@@ -28,11 +28,11 @@ functions (`fetchNextGenAsync`, `fetchEmptyMatrixAsync`, etc.) to simulate backe
 - Clicking cells toggles their state (`alive` <> `dead`) directly in the matrix.
 
 Component breakdown:
-- `<Universe />` displays the grid and passes cell selection events back to the App.
+- `<Universe />` displays the grid and passes cell selection events back to the Game.
 - Service functions implemented to make matrix computations, keeping the UI code clean.
 
 Why this structure:
-- Splitting visual rendering (`Universe`) from game logic (`App` + services) increases modularity.
+- Splitting visual rendering (`Universe`) from game logic (`GameGame` + services) increases modularity.
 - Using async service calls allows potential future extensions (like server-based computations).
 - React state hooks and effects provide an elegant, declarative way to control updates and timers.
 
