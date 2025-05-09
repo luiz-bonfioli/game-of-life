@@ -1,54 +1,108 @@
-# React + TypeScript + Vite
+# Conway's Game of Life — React App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Problem Description
 
-Currently, two official plugins are available:
+This project implements Conway's Game of Life, a zero-player game where cells on a 2D grid evolve over discrete time steps based on a set of simple rules:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* Any live cell with two or three live neighbors survives.
+* Any dead cell with three live neighbors becomes a live cell.
+* All other live cells die in the next generation; all other dead cells stay dead.
 
-## Expanding the ESLint configuration
+The React app provides:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Play / Stop controls to run the simulation automatically.
+* Step controls to manually advance the simulation.
+* Matrix Glider Gun seeding to insert interesting starting patterns.
+* Adjustable grid size (dimension), controlled via an environment variable.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Steps to Run the Code Locally
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Clone the repository**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   ```bash
+   git clone https://github.com/luiz-bonfioli/game-of-life
+   cd game-of-life
+   ```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set environment variables**
+   or change the `.env.[production, staging, development]` file in the root directory:
+
+   ```
+   VITE_MATRIX_DIMENSION=50
+   ```
+
+4. **Start the server [dev, prod or stg]**
+
+   ```bash
+   npm run dev
+   ```
+
+   ```bash
+   npm run stg
+   ```
+
+   ```bash
+   npm run prod
+   ```
+
+5. **Run the tests**
+
+   ```bash
+   npx jest 
+   ```
+
+6. **Build for production**
+
+   ```bash
+   npm run build
+   ```
+
+## Explanation of the Solution and Thought Process
+
+* **Component Architecture**
+  The app is split into components:
+
+    * `App`: main container, handles state and UI.
+    * `Universe`: renders the matrix/grid.
+    * `LifeService`: contains the logic for generating the matrix and calculating the next generation.
+
+* **State Management**
+  React's `useState` and `useEffect` hooks manage:
+
+    * The current matrix.
+    * Playing / stopped state.
+    * Step counts.
+
+* **Matrix Dimension**
+  The matrix size is controlled via `import.meta.env.VITE_MATRIX_DIMENSION`, making the app configurable without code changes.
+
+* **Testing**
+  We use Jest and React Testing Library to test:
+
+    * UI rendering.
+    * Button interactions.
+    * Matrix updates.
+      External services (`LifeService`) and components (`Universe`) are mocked to isolate unit behavior.
+
+* **Mocking `import.meta.env` in Tests**
+  Since `import.meta.env` doesn't exist in the test environment, the `getMatrixDimension` utility is mocked to return a predictable value.
+
+## Assumptions and Trade-offs
+
+**Assumptions**
+
+* The matrix is square (`n x n`) as controlled by `VITE_MATRIX_DIMENSION`.
+* The backend logic for generating matrices (`LifeService`) works as a promise-based async service (even if it returns static data in tests).
+* Users primarily interact via Play / Stop / Next / Glider buttons; 
+* Matrix editing is handled by clicking on the cells.
+
+**Trade-offs**
+
+* Services and components are mocked for simplicity, limiting end-to-end integration testing.
+* Assumes reasonably small matrices (≤ 200x200); larger grids may require performance optimizations.
