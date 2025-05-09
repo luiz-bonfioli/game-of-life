@@ -22,7 +22,7 @@ export default function Universe({
         }
 
         return (
-            <span
+            <span role="gridcell"
                 style={{
                     ...style,
                     backgroundColor: value === 1 ? 'black' : 'lightgray',
