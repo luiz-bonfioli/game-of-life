@@ -2,9 +2,43 @@ import {useEffect, useState} from "react"
 import Universe from "./components/Universe"
 import {fetchEmptyMatrixAsync, fetchNextGenAsync, fetchSeedGliderGunMatrixAsync} from "./services/LifeService"
 import Logger from "./common/Logger";
+import {getMatrixDimension} from "./common/Config";
 
+/*
+This React application implements Conway's Game of Life.
+
+Overview of the solution:
+The `App` component manages the entire game state and orchestrates updates to the universe grid.
+
+Core features:
+- The universe grid is represented by a 2D matrix (`number[][]`), where `1` is a live cell and `0` is a dead cell.
+- It provides user controls to:
+    - Play: Start automatic generation updates.
+    - Stop: Pause automatic updates.
+    - Next: Step forward by one generation.
+    - Move N Steps: Advance multiple generations at once.
+    - Matrix Glider: Load a preset glider gun pattern.
+
+Key logic points:
+- State is managed using React’s `useState` for the matrix, play state, and step count.
+- The game logic (calculating next generations) is abstracted into asynchronous service
+functions (`fetchNextGenAsync`, `fetchEmptyMatrixAsync`, etc.) to simulate backend APIs requests.
+- `useEffect` handles the play mode: it sets up an interval timer that updates the grid every 300 ms.
+- Clicking cells toggles their state (`alive` <> `dead`) directly in the matrix.
+
+Component breakdown:
+- `<Universe />` displays the grid and passes cell selection events back to the App.
+- Service functions implemented to make matrix computations, keeping the UI code clean.
+
+Why this structure:
+- Splitting visual rendering (`Universe`) from game logic (`App` + services) increases modularity.
+- Using async service calls allows potential future extensions (like server-based computations).
+- React state hooks and effects provide an elegant, declarative way to control updates and timers.
+
+This structure ensures the app remains responsive, extendable, and easy to maintain.
+*/
 function App() {
-    const dimension = 50
+    const dimension = getMatrixDimension()
     const [matrix, setMatrix] = useState<number[][]>([])
     const [playing, setPlaying] = useState(false)
     const [steps, setSteps] = useState(1)
