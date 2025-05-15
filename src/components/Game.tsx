@@ -39,20 +39,27 @@ Why this structure:
 This structure ensures the app remains responsive, extendable, and easy to maintain.
 */
 export default function Game() {
+    // Get the initial matrix dimension (e.g. width/height of the grid)
     const dimension = getMatrixDimension()
+
+    // React state: matrix holds the grid (2D array), playing toggles animation, steps controls how many steps to simulate
     const [matrix, setMatrix] = useState<number[][]>([])
     const [playing, setPlaying] = useState(false)
     const [steps, setSteps] = useState(1)
 
+    // Start the simulation (enable auto-play)
     const handlePlay = () => {
         Logger.logInfo('Playing')
         setPlaying(true)
     }
+
+    // Stop the simulation (pause auto-play)
     const handleStop = () => {
         Logger.logInfo('Stopped')
         setPlaying(false)
     }
 
+    // Load the glider gun seed pattern into the matrix
     const handleGliderGunMatrix = () => {
         fetchSeedGliderGunMatrixAsync(dimension)
             .then(gliderGunMatrix => {
@@ -63,6 +70,7 @@ export default function Game() {
             })
     }
 
+    // Advance the matrix by one generation
     const handleNext = async () => {
         Logger.logInfo('Next generation matrix')
         fetchNextGenAsync(matrix)
@@ -74,11 +82,13 @@ export default function Game() {
             })
     }
 
+    // Move forward `numSteps` generations in sequence
     const handleMoveForward = (numSteps: number) => {
         Logger.logInfo(`Moving ${numSteps} steps forward`)
         let newMatrix = matrix
         let promise = Promise.resolve(newMatrix)
 
+        // Chain promises to simulate each generation sequentially
         for (let i = 0; i < numSteps; i++) {
             promise = promise.then((currentMatrix) =>
                 fetchNextGenAsync(currentMatrix).then((result) => {
@@ -87,6 +97,8 @@ export default function Game() {
                 })
             )
         }
+
+        // Update state after all steps completed
         promise
             .then(() => {
                 setMatrix(newMatrix)
@@ -96,12 +108,16 @@ export default function Game() {
             })
     }
 
+    // Toggle the state of a cell (alive/dead) when clicked
     const handleCellSelected = (row: number, col: number) => {
+        // Clone matrix to avoid direct mutation
         const newMatrix = matrix.map(rowArr => [...rowArr])
+        // Toggle cell state
         newMatrix[row][col] = newMatrix[row][col] === 0 ? 1 : 0
         setMatrix(newMatrix)
     }
 
+    // useEffect to auto-advance the matrix while playing
     useEffect(() => {
         const updateMatrix = async () => {
             if (playing) {
@@ -109,61 +125,65 @@ export default function Game() {
                 setMatrix(nextMatrix)
             }
         }
+
+        // Set interval to update the matrix every 300ms while playing
         if (playing) {
             const interval = setInterval(updateMatrix, 300)
-            return () => clearInterval(interval)
+            return () => clearInterval(interval) // Cleanup on unmount or stop
         }
     }, [playing, matrix])
 
+    // useEffect to initialize the matrix with an empty grid when the component mounts or dimension changes
     useEffect(() => {
         fetchEmptyMatrixAsync(dimension).then(emptyMatrix => setMatrix(emptyMatrix))
     }, [dimension])
 
+
     return (
         <>
-        <div className={styles.layoutSidebar}>
-            <div className="flex flex-col gap-4 mt-2">
-                <button
-                    className={`px-4 py-2 ${playing ? 'bg-yellow-500' : 'bg-green-500'} text-white rounded mr-2 hover:bg-green-600`}
-                    onClick={handlePlay}
-                    disabled={playing}>
-                    Play
-                </button>
-                <button
-                    className="px-4 py-2 bg-red-500 text-white rounded mr-2 hover:bg-red-600"
-                    onClick={handleStop}
-                    disabled={!playing}>
-                    Stop
-                </button>
-                <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600"
-                    onClick={handleNext}>
-                    Next
-                </button>
-                <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600"
-                    onClick={handleGliderGunMatrix}>
-                    Matrix Glider
-                </button>
-                <div >
+            <div className={styles.layoutSidebar}>
+                <div className="flex flex-col gap-4 mt-2">
                     <button
-                        className="px-4 py-2 bg-indigo-500 text-white rounded mr-2 hover:bg-indigo-600"
-                        onClick={() => handleMoveForward(steps)}>
-                        Move {steps} Step(s)
+                        className={`px-4 py-2 ${playing ? 'bg-yellow-500' : 'bg-green-500'} text-white rounded mr-2 hover:bg-green-600`}
+                        onClick={handlePlay}
+                        disabled={playing}>
+                        Play
                     </button>
-                    <input
-                        type="number"
-                        value={steps}
-                        onChange={(e) => setSteps(Number(e.target.value))}
-                        min="1"
-                        className="px-4 py-2 border rounded w-[100px]"
-                    />
+                    <button
+                        className="px-4 py-2 bg-red-500 text-white rounded mr-2 hover:bg-red-600"
+                        onClick={handleStop}
+                        disabled={!playing}>
+                        Stop
+                    </button>
+                    <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600"
+                        onClick={handleNext}>
+                        Next
+                    </button>
+                    <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600"
+                        onClick={handleGliderGunMatrix}>
+                        Matrix Glider
+                    </button>
+                    <div>
+                        <button
+                            className="px-4 py-2 bg-indigo-500 text-white rounded mr-2 hover:bg-indigo-600"
+                            onClick={() => handleMoveForward(steps)}>
+                            Move {steps} Step(s)
+                        </button>
+                        <input
+                            type="number"
+                            value={steps}
+                            onChange={(e) => setSteps(Number(e.target.value))}
+                            min="1"
+                            className="px-4 py-2 border rounded w-[100px]"
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div className="flex flex-col items-center m-2">
-            <Universe matrixInput={matrix} onCellSelected={handleCellSelected}/>
-        </div>
+            <div className="flex flex-col items-center m-2">
+                <Universe matrixInput={matrix} onCellSelected={handleCellSelected}/>
+            </div>
         </>
     )
 }
