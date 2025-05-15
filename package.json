@@ -8,6 +8,7 @@
     "stg": "vite --mode staging",
     "prod": "vite --mode production",
     "build": "tsc -b && vite build --mode production",
+    "test": "npx jest",
     "lint": "eslint .",
     "preview": "vite preview"
   },
