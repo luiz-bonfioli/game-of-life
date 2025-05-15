@@ -100,7 +100,16 @@ Go to your browser and access the app using this url: http://localhost:3000
    ```bash
    npm run build
    ```
-   
+
+## CI Pipeline (GitHub Actions)
+This project uses GitHub Actions to automatically test and build the application on every push or pull request to the main branch.
+
+What the pipeline does:
+- Checkout code – Clones the repository.
+- Setup Node.js – Installs Node.js v20.
+- Install dependencies – Runs npm ci for a clean and fast install.
+- Run tests – Executes the test suite using **npm test**.
+- Build application – Runs **npm run build** to generate the production build.
 
 ## The Glider Gun pattern (seed example)
 The Glider Gun (often called the Gosper Glider Gun) is a famous and important pattern in Conway’s Game of Life because:
