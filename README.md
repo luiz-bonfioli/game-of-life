@@ -6,7 +6,7 @@ This project implements Conway's Game of Life, a zero-player game where cells on
 
 * Any live cell with two or three live neighbors survives.
 * Any dead cell with three live neighbors becomes a live cell.
-* All other live cells die in the next generation; all other dead cells stay dead.
+* All others live cells die in the next generation; all other dead cells stay dead.
 
 The React app provides:
 
@@ -14,6 +14,42 @@ The React app provides:
 * Step controls to manually advance the simulation.
 * Matrix Glider Gun seeding to insert interesting starting patterns.
 * Adjustable grid size (dimension), controlled via an environment variable.
+
+## Project documentation
+[View the Documentation (PDF)](./docs/Game of Life.pdf)
+
+[Watch the video](./docs/Game of Life Video.mov)
+
+## Project structure overview
+```
+src/
+├── common/
+│   ├── Config.ts              # Configuration constants and environment settings
+│   ├── LifeAlgorithm.ts      # Core logic for Conway’s Game of Life 
+│   └── Logger.ts              # Custom logger utility for debugging and runtime info
+│
+├── components/
+│   ├── Game.tsx               # Main container component for the Game of Life
+│   └── Universe.tsx           # Component responsible for rendering the cell grid
+│
+├── services/
+│   └── LifeService.ts         # Service layer to manage game state, evolution steps, etc.
+│
+├── App.tsx                    # Root React component that initializes and ties everything together
+│                              # If it's a TypeScript module, clarify its purpose
+│
+tests/                         # Unit and integration tests for components, services, and core logic
+
+```
+
+## Steps to Run the Code using Docker
+```shell
+docker build -t game-of-life . 
+```
+```shell
+docker run -p 3000:80 game-of-life
+```
+Go to your browser and access the app using this url: http://localhost:3000
 
 ## Steps to Run the Code Locally
 
