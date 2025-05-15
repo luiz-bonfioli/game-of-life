@@ -39,5 +39,62 @@ describe('Game of Life logic', () => {
             ]
             expect(nextGen(empty)).toEqual(expected)
         })
+
+        // Edge case tests below:
+
+        test('handles single live cell dying due to underpopulation', () => {
+            const input = [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ]
+            const expected = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+            ]
+            expect(nextGen(input)).toEqual(expected)
+        })
+
+        test('handles live cell with exactly two neighbors surviving', () => {
+            const input = [
+                [1, 1, 0],
+                [1, 1, 0],
+                [0, 0, 0],
+            ]
+            const expected = [
+                [1, 1, 0],
+                [1, 1, 0],
+                [0, 0, 0],
+            ]
+            expect(nextGen(input)).toEqual(expected)
+        })
+
+        test('handles reproduction: dead cell with exactly three live neighbors becomes alive', () => {
+            const input = [
+                [1, 1, 0],
+                [0, 1, 0],
+                [0, 0, 0],
+            ]
+            const expected = [
+                [1, 1, 0],
+                [1, 1, 0],
+                [0, 0, 0],
+            ]
+            expect(nextGen(input)).toEqual(expected)
+        })
+
+        test('handles border cells correctly without errors', () => {
+            const input = [
+                [1, 0],
+                [0, 1],
+            ]
+            // Expect the function to process edges properly (live cells with < 2 neighbors die)
+            const expected = [
+                [0, 0],
+                [0, 0],
+            ]
+            expect(nextGen(input)).toEqual(expected)
+        })
     })
 })
