@@ -35,29 +35,38 @@ export default function Universe({
                                      onCellSelected,
                                      matrixInput = []
                                  }: UniverseProps) {
+    // Store the input matrix and derive dimensions
     const matrix = matrixInput
     const numRows = matrix.length
     const numCols = matrix[0]?.length || 0
+
+    // Define the size of each cell in pixels
     const cellSize = 10
 
+    // Cell component rendered inside a virtualized grid
     const Cell = ({columnIndex, rowIndex, style}: GridChildComponentProps) => {
+        // Get the value of the current cell (1 = alive, 0 = dead)
         const value = matrix[rowIndex][columnIndex]
 
+        // Handle click on the cell: notify parent via callback if defined
         const handleClick = () => {
             if (onCellSelected) onCellSelected(rowIndex, columnIndex)
         }
 
+        // Render a <span> as the visual cell
         return (
-            <span role="gridcell"
+            <span
+                role="gridcell"
                 style={{
-                    ...style,
-                    backgroundColor: value === 1 ? 'black' : 'lightgray',
+                    ...style, // Positioning & sizing provided by react-window
+                    backgroundColor: value === 1 ? 'black' : 'lightgray', // Alive = black, Dead = gray
                     border: '1px solid #ccc',
                     boxSizing: 'border-box',
                     cursor: 'pointer',
                     display: 'inline-block',
                 }}
-                onClick={handleClick}/>
+                onClick={handleClick} // Handle user click
+            />
         )
     }
 
