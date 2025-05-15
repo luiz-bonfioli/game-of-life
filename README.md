@@ -43,9 +43,11 @@ tests/                         # Unit and integration tests for components, serv
 ```
 
 ## Steps to Run the Code using Docker
+1. **Build the docker image**
 ```shell
 docker build -t game-of-life . 
 ```
+2. **Run the docker image**
 ```shell
 docker run -p 3000:80 game-of-life
 ```
@@ -98,6 +100,23 @@ Go to your browser and access the app using this url: http://localhost:3000
    ```bash
    npm run build
    ```
+   
+
+## The Glider Gun pattern (seed example)
+The Glider Gun (often called the Gosper Glider Gun) is a famous and important pattern in Conway’s Game of Life because:
+
+- It is a stable oscillator that periodically produces “gliders”, which are small patterns that move diagonally across the grid.
+
+- The glider gun was the first known pattern that demonstrated infinite growth in the Game of Life — it keeps creating new gliders forever, increasing the population indefinitely.
+
+How Does It Work?
+- The Glider Gun is a fixed arrangement of live cells (the "seed").
+
+- Every 30 generations (steps), it "fires" a new glider — a small cluster of cells that travels diagonally.
+
+- The gun itself remains mostly unchanged, cycling through a repeating pattern.
+
+- The gliders it produces move away and continue on their own, potentially interacting with other parts of the grid.
 
 ## Explanation of the Solution and Thought Process
 
