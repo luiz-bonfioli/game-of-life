@@ -1,4 +1,4 @@
-# Conway's Game of Life — React App
+# Conway's Game of Life - React App
 
 ## Problem Description
 
